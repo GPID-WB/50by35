@@ -85,7 +85,7 @@ This is a one-time system setting that makes Stata accessible from any terminal.
 
 6. Click **OK** on all dialogs to save.
 
-7. **Restart** any open terminals or RStudio for the change to take effect.
+7. **Restart** any open terminals or Positron for the change to take effect.
 
 8. Verify it works by opening Command Prompt and running:
    ```
@@ -153,7 +153,7 @@ locally, saved to the `_freeze/` folder, and committed alongside the source file
 
 1. **Write or modify** a Stata chunk in a `.qmd` file.
 
-2. **Render the full book locally** in the RStudio Terminal (or Git Bash):
+2. **Render the full book locally** in the Positron Terminal (or Git Bash):
    ```bash
    quarto render
    ```

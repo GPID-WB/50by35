@@ -7,6 +7,11 @@ including researchers, economists, and data analysts who may be new to Quarto.
 Instructions are written for **Windows** users. macOS notes are included where the
 steps differ.
 
+> **IDE:** This project uses [Positron](https://positron.posit.co/) as the recommended
+> IDE. If you prefer RStudio, see [`wiki/rstudio-users.md`](rstudio-users.md).
+
+---
+
 ## One-Time Setup
 
 ### 1. Install Git
@@ -36,16 +41,19 @@ It should report version ≥ 1.4.
 
 > **macOS:** Download the `.pkg` installer from the same page.
 
-### 3. Install R and RStudio
+### 3. Install R and Positron
 
 1. Download R from https://cran.r-project.org/bin/windows/base/ and run the installer.
-2. Download RStudio from https://posit.co/download/rstudio-desktop/ and run the installer.
+2. Download **Positron** from https://positron.posit.co/ and run the installer.
 
-Always open RStudio from the project folder (see step 5 below).
+Positron is a modern IDE built specifically for data science with R and Python. It has
+a built-in terminal, a data viewer, and native Quarto support.
+
+> **macOS:** The same Positron download page has a macOS installer.
 
 ### 4. Install R packages
 
-Open RStudio, then in the **Console** panel run:
+Open Positron, then open the **Console** panel (bottom of the screen) and run:
 
 ```r
 install.packages(c("tidyverse", "haven", "knitr", "gt", "ggplot2", "scales", "here"))
@@ -62,28 +70,28 @@ so Quarto can find it.
 
 ### 6. Clone the repository
 
-Open **Git Bash** (installed with Git) or **Command Prompt** and run:
+Open **Git Bash** (installed with Git) or the **Positron Terminal** and run:
 
 ```bash
 git clone https://github.com/GPID-WB/50by35.git
-cd 50by35
 ```
 
-Then open the `50by35` folder in RStudio: **File → Open Project** and select the folder,
-or simply double-click the `.Rproj` file if one exists.
+Then open the `50by35` folder in Positron: **File → Open Folder…** and select the
+`50by35` folder. Positron will detect it as an R project automatically.
 
 ---
 
 ## Workflow for Contributing
 
-1. **Create a branch** for your work. In Git Bash or Command Prompt:
+1. **Create a branch** for your work. In the Positron Terminal:
    ```bash
    git checkout -b your-name/chapter-topic
    ```
 
-2. **Edit or create** your `.qmd` chapter in `chapters/`.
+2. **Edit or create** your `.qmd` chapter in `chapters/`. You can open any `.qmd`
+   file directly from the Explorer panel on the left.
 
-3. **Preview locally** before pushing. In the RStudio Terminal pane (or Git Bash):
+3. **Preview locally** before pushing. In the Positron Terminal:
    ```bash
    quarto preview
    ```
@@ -109,19 +117,19 @@ or simply double-click the `.Rproj` file if one exists.
 
 ---
 
-## Running Terminal Commands on Windows
+## Running Terminal Commands in Positron
 
-Throughout this guide, short commands like `git add .` or `quarto render` can be run in
-any of these places — use whichever you're most comfortable with:
+All `git` and `quarto` commands in this guide are run in the **Terminal** panel.
+To open it in Positron: **View → Terminal** or press `` Ctrl + ` ``.
+
+You can also use any of these alternatives if you prefer:
 
 | Option | How to open |
 |---|---|
-| **RStudio Terminal** | Bottom-left pane → "Terminal" tab (easiest for R users) |
-| **Git Bash** | Right-click any folder → "Open Git Bash here" |
+| **Positron Terminal** | `View → Terminal` or `` Ctrl + ` `` (recommended) |
+| **Git Bash** | Right-click any folder in Explorer → "Open Git Bash here" |
 | **Command Prompt** | `Win + R` → type `cmd` → Enter |
 | **PowerShell** | `Win + X` → Windows PowerShell |
-
-All commands in this guide work in any of these options.
 
 ---
 
