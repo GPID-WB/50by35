@@ -6,13 +6,21 @@ on:
       - main
 
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
+
+# Only one deployment at a time
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       # 1. Check out repository (with full history for freeze cache)
@@ -25,7 +33,7 @@ jobs:
       - name: Install Quarto
         uses: quarto-dev/quarto-actions/setup@v2
         with:
-          version: "1.5.57"   # pin to a specific stable version
+          version: "1.5.57"
 
       # 3. Set up R
       - name: Set up R
@@ -49,17 +57,24 @@ jobs:
           renv::restore()
         shell: Rscript {0}
 
-      # 6. Render the book
+      # 6. Set up GitHub Pages
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      # 7. Render the book
       #    Stata is NOT installed on the runner.
       #    All Stata outputs must be frozen locally before pushing.
       #    `freeze: auto` in _quarto.yml ensures frozen outputs are used.
       - name: Render Quarto book
         run: quarto render
 
-      # 7. Deploy to GitHub Pages (publishes the /docs folder)
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      # 8. Upload rendered site as a Pages artifact
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs
-          publish_branch: gh-pages
+          path: ./docs
+
+      # 9. Deploy to GitHub Pages via the Pages API (no gh-pages branch needed)
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
