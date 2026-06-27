@@ -1,0 +1,48 @@
+project:
+  type: book
+  output-dir: docs   # GitHub Pages serves from /docs on main branch
+
+book:
+  title: "UNHCR 50by35 Monitoring Framework"
+  subtitle: "Methodology, Baseline, and Monitoring Indicators for Refugee Self-Reliance"
+  date: today
+  author:
+    - name: "World Bank / UNHCR Joint Team"
+  repo-url: https://github.com/GPID-WB/50by35
+  repo-actions: [edit, issue]
+  chapters:
+    - index.qmd
+    - part: "Framework"
+      chapters:
+        - chapters/01-introduction.qmd
+        - chapters/02-definitions.qmd
+        - chapters/03-methodology.qmd
+    - part: "Data & Baseline"
+      chapters:
+        - chapters/04-data-sources.qmd
+        - chapters/05-baseline.qmd
+    - part: "Monitoring"
+      chapters:
+        - chapters/06-monitoring-indicators.qmd
+  bibliography: references.bib
+
+format:
+  html:
+    theme: cosmo
+    css: []                     # Tachyons is injected via the extension
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    code-fold: true
+    code-tools: true
+    filters:
+      - tachyons              # activates the Tachyons extension
+
+execute:
+  freeze: auto                # cache all outputs; re-execute only when source changes
+  echo: true
+  warning: false
+
+knitr:
+  opts_chunk:
+    comment: "#>"
