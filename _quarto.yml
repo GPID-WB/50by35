@@ -29,14 +29,15 @@ book:
 format:
   html:
     theme: cosmo
-    css: []                     # Tachyons is injected via the extension
     toc: true
     toc-depth: 3
     number-sections: true
     code-fold: true
     code-tools: true
-    filters:
-      - tachyons              # activates the Tachyons extension
+    include-in-header:
+      - text: |
+          <link rel="stylesheet"
+                href="https://unpkg.com/tachyons@4.12.0/css/tachyons.min.css"/>
 
 execute:
   freeze: auto                # cache all outputs; re-execute only when source changes
