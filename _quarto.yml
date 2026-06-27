@@ -24,7 +24,8 @@ book:
     - part: "Monitoring"
       chapters:
         - chapters/06-monitoring-indicators.qmd
-  bibliography: references.bib
+
+bibliography: references.bib
 
 format:
   html:
