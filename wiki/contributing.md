@@ -4,55 +4,86 @@
 
 This guide is for anyone contributing chapters, edits, or code to this Quarto book,
 including researchers, economists, and data analysts who may be new to Quarto.
+Instructions are written for **Windows** users. macOS notes are included where the
+steps differ.
 
 ## One-Time Setup
 
 ### 1. Install Git
 
-Download from https://git-scm.com/. Verify with `git --version`.
+Download from https://git-scm.com/downloads and run the installer. Accept all defaults.
+
+Verify the installation by opening **Command Prompt** (`Win + R`, type `cmd`, press Enter)
+and running:
+
+```
+git --version
+```
+
+> **macOS:** Install via Homebrew (`brew install git`) or the Xcode Command Line Tools
+> (`xcode-select --install`).
 
 ### 2. Install Quarto
 
-Download the latest installer from https://quarto.org/docs/get-started/.  
-Verify with `quarto --version` (should be ≥ 1.4).
+Download the Windows installer (`.msi`) from https://quarto.org/docs/get-started/ and
+run it. Verify in Command Prompt:
 
-### 3. Install R
+```
+quarto --version
+```
 
-Download from https://cran.r-project.org/. Install **RStudio** as your IDE.
+It should report version ≥ 1.4.
+
+> **macOS:** Download the `.pkg` installer from the same page.
+
+### 3. Install R and RStudio
+
+1. Download R from https://cran.r-project.org/bin/windows/base/ and run the installer.
+2. Download RStudio from https://posit.co/download/rstudio-desktop/ and run the installer.
+
+Always open RStudio from the project folder (see step 5 below).
 
 ### 4. Install R packages
 
-Open RStudio in the project folder and run:
+Open RStudio, then in the **Console** panel run:
 
 ```r
-install.packages("renv")
-renv::restore()
+install.packages(c("tidyverse", "haven", "knitr", "gt", "ggplot2", "scales", "here"))
 ```
 
-This installs all required packages from `renv.lock`.
+> If your team decides to use `renv` for stricter package version control, see
+> [`wiki/renv-guide.md`](renv-guide.md) instead.
 
 ### 5. Install Stata (only if you will write Stata code)
 
-Stata must be installed and accessible from the command line.  
-See `wiki/r-and-stata-usage.md` for path configuration.
+Stata must be installed on your machine. Most team members will already have it.
+See [`wiki/r-and-stata-usage.md`](r-and-stata-usage.md) for how to configure Stata
+so Quarto can find it.
 
 ### 6. Clone the repository
+
+Open **Git Bash** (installed with Git) or **Command Prompt** and run:
 
 ```bash
 git clone https://github.com/GPID-WB/50by35.git
 cd 50by35
 ```
 
+Then open the `50by35` folder in RStudio: **File → Open Project** and select the folder,
+or simply double-click the `.Rproj` file if one exists.
+
+---
+
 ## Workflow for Contributing
 
-1. **Create a branch** for your work:
+1. **Create a branch** for your work. In Git Bash or Command Prompt:
    ```bash
    git checkout -b your-name/chapter-topic
    ```
 
 2. **Edit or create** your `.qmd` chapter in `chapters/`.
 
-3. **Preview locally** before pushing:
+3. **Preview locally** before pushing. In the RStudio Terminal pane (or Git Bash):
    ```bash
    quarto preview
    ```
@@ -75,6 +106,24 @@ cd 50by35
 
 7. Once approved and merged to `main`, GitHub Actions will automatically rebuild and
    publish the book to GitHub Pages.
+
+---
+
+## Running Terminal Commands on Windows
+
+Throughout this guide, short commands like `git add .` or `quarto render` can be run in
+any of these places — use whichever you're most comfortable with:
+
+| Option | How to open |
+|---|---|
+| **RStudio Terminal** | Bottom-left pane → "Terminal" tab (easiest for R users) |
+| **Git Bash** | Right-click any folder → "Open Git Bash here" |
+| **Command Prompt** | `Win + R` → type `cmd` → Enter |
+| **PowerShell** | `Win + X` → Windows PowerShell |
+
+All commands in this guide work in any of these options.
+
+---
 
 ## Commit Message Convention
 

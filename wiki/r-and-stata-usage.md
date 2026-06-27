@@ -1,5 +1,9 @@
 # R and Stata Usage Guide
 
+Instructions are written for **Windows** users. macOS notes are included where steps differ.
+
+---
+
 ## R Code Chunks
 
 R code chunks are delimited with ` ```{r} ` and support Quarto chunk options prefixed with `#|`.
@@ -37,7 +41,8 @@ df |>
 
 ## Stata Code Chunks
 
-Quarto supports Stata natively via the built-in `stata` engine (Quarto ≥ 1.4). Stata must be installed on your machine and on your system `PATH`.
+Quarto supports Stata natively via the built-in `stata` engine (Quarto ≥ 1.4).
+Stata must be installed on your machine and Quarto must be able to find it (see below).
 
 ### Basic example
 
@@ -52,60 +57,118 @@ tabulate region
 ```
 ````
 
-### Verifying Stata is on your PATH
+---
 
-Open a terminal and run:
+## Configuring Stata on Windows (Primary Setup)
 
-```bash
-stata -q -e "display 1"
+Quarto needs to know where your Stata executable is. There are two ways to do this.
+
+### Option A — Add Stata to your Windows PATH (recommended)
+
+This is a one-time system setting that makes Stata accessible from any terminal.
+
+1. Find your Stata installation folder. Common locations:
+   - `C:\Program Files\Stata18\`
+   - `C:\Program Files\Stata17\`
+   - `C:\Program Files (x86)\Stata16\`
+
+2. Open **Start Menu** and search for **"Edit the system environment variables"**.
+
+3. Click **Environment Variables…**
+
+4. Under **System variables**, select **Path** and click **Edit…**
+
+5. Click **New** and paste the full path to your Stata folder, e.g.:
+   ```
+   C:\Program Files\Stata18
+   ```
+
+6. Click **OK** on all dialogs to save.
+
+7. **Restart** any open terminals or RStudio for the change to take effect.
+
+8. Verify it works by opening Command Prompt and running:
+   ```
+   stata /e display 1
+   ```
+   If Stata runs without an error, you're good.
+
+### Option B — Set the path inside R (per-project)
+
+If you prefer not to modify system settings, set the path in R instead. Add this line
+at the top of any `.qmd` file that contains Stata chunks, inside an R setup chunk:
+
+````markdown
+```{r}
+#| include: false
+Statamarkdown::stata_engine_path("C:/Program Files/Stata18/StataSE-64.exe")
+```
+````
+
+Or set it once for the whole project in your `.Rprofile` file (in the project root):
+
+```r
+# .Rprofile
+Statamarkdown::stata_engine_path("C:/Program Files/Stata18/StataSE-64.exe")
 ```
 
-If Stata is not found, add it to your PATH. On macOS, add this to your `~/.zshrc` or `~/.bash_profile`:
+Adjust the filename to match your Stata edition:
 
-```bash
-export PATH="/Applications/Stata/StataMP.app/Contents/MacOS:$PATH"
-```
+| Stata edition | Executable name |
+|---|---|
+| Stata/MP | `StataMP-64.exe` |
+| Stata/SE | `StataSE-64.exe` |
+| Stata/IC | `Stata-64.exe` |
+| Stata/BE | `StataBE-64.exe` |
 
-Adjust the path to match your Stata version and installation location.
+> **macOS:** Add Stata to PATH in `~/.zshrc`:
+> ```bash
+> export PATH="/Applications/Stata/StataMP.app/Contents/MacOS:$PATH"
+> ```
+> Or set the path via `Statamarkdown::stata_engine_path("/Applications/Stata/StataMP.app/Contents/MacOS/stata-mp")`.
 
 ---
 
-## Using `Statamarkdown` (Alternative Approach)
+## Using `Statamarkdown` (Alternative / Fallback)
 
-If the native engine is not working, the `Statamarkdown` R package provides an alternative that calls Stata via R:
+The `Statamarkdown` R package is an alternative to the native Quarto Stata engine.
+Install it once in R:
 
 ```r
 install.packages("Statamarkdown")
 ```
 
-Set the Stata executable path once at the top of your document or in `.Rprofile`:
-
-```r
-Statamarkdown::stata_engine_path("/usr/local/stata/stata")   # adjust as needed
-```
-
-Code chunks still use ` ```{stata} ` — no syntax change is needed.
+Code chunks still use ` ```{stata} ` — no syntax change needed. The package uses
+the path set via `stata_engine_path()` (see Option B above).
 
 ---
 
 ## The Freeze Workflow for Stata
 
-Because Stata requires a paid license, the GitHub Actions CI runner cannot execute Stata code. The project relies on `freeze: auto` to handle this:
+Because Stata requires a paid license, the GitHub Actions CI server cannot execute
+Stata code. The project uses `freeze: auto` to handle this: Stata outputs are computed
+locally, saved to the `_freeze/` folder, and committed alongside the source files.
+
+**Step-by-step:**
 
 1. **Write or modify** a Stata chunk in a `.qmd` file.
-2. **Render locally** with Stata installed:
+
+2. **Render the full book locally** in the RStudio Terminal (or Git Bash):
    ```bash
    quarto render
    ```
+
 3. **Commit both** the `.qmd` file and the updated `_freeze/` folder:
    ```bash
    git add chapters/your-chapter.qmd _freeze/
    git commit -m "feat: add Stata summary table for indicator X"
    git push
    ```
-4. GitHub Actions will render the book using the committed frozen outputs — no Stata license needed on the server.
 
-If you forget to commit `_freeze/`, the CI build will fail on Stata chunks.
+4. GitHub Actions renders the book using the committed frozen outputs — no Stata
+   license needed on the server.
+
+> If you forget to commit `_freeze/`, the CI build will fail on Stata chunks.
 
 ---
 
@@ -118,9 +181,9 @@ library(haven)
 
 df <- read_dta("data/raw/household_survey.dta")
 
-# haven preserves Stata value labels as factors
+# haven preserves Stata value labels — convert to R factors
 df <- df |>
-  haven::as_factor()    # convert labelled columns to R factors
+  haven::as_factor()
 
 head(df)
 ```
@@ -131,4 +194,5 @@ To write a processed dataset back to `.dta` format:
 write_dta(df_processed, "data/processed/household_clean.dta")
 ```
 
-`haven` preserves variable labels, value labels, and Stata data types, making it the recommended bridge between R and Stata workflows.
+`haven` preserves variable labels, value labels, and Stata data types, making it the
+recommended bridge between R and Stata workflows.
