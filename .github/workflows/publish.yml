@@ -50,11 +50,21 @@ jobs:
           key: ${{ runner.os }}-r-${{ hashFiles('renv.lock') }}
           restore-keys: ${{ runner.os }}-r-
 
-      # 5. Install R dependencies from renv
-      - name: Install R dependencies
+      # 5a. Install R dependencies via renv (if renv.lock exists)
+      - name: Install R dependencies (renv)
+        if: hashFiles('renv.lock') != ''
         run: |
           install.packages("renv")
           renv::restore()
+        shell: Rscript {0}
+
+      # 5b. Install R dependencies directly (if no renv.lock)
+      - name: Install R dependencies (no renv)
+        if: hashFiles('renv.lock') == ''
+        run: |
+          install.packages(c(
+            "tidyverse", "haven", "knitr", "gt", "ggplot2", "scales", "here"
+          ))
         shell: Rscript {0}
 
       # 6. Set up GitHub Pages
