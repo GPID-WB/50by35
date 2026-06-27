@@ -25,7 +25,7 @@ jobs:
     steps:
       # 1. Check out repository (with full history for freeze cache)
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -44,27 +44,27 @@ jobs:
 
       # 4. Restore R package cache
       - name: Cache R packages
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ env.R_LIBS_USER }}
           key: ${{ runner.os }}-r-${{ hashFiles('renv.lock') }}
           restore-keys: ${{ runner.os }}-r-
 
-      # 5a. Install R dependencies via renv (if renv.lock exists)
-      - name: Install R dependencies (renv)
-        if: hashFiles('renv.lock') != ''
+      # 5. Install R dependencies
+      #    - If renv.lock exists: restore from it (exact version pinning)
+      #    - Otherwise: install the standard package set directly
+      - name: Install R dependencies
         run: |
-          install.packages("renv")
-          renv::restore()
-        shell: Rscript {0}
-
-      # 5b. Install R dependencies directly (if no renv.lock)
-      - name: Install R dependencies (no renv)
-        if: hashFiles('renv.lock') == ''
-        run: |
-          install.packages(c(
-            "tidyverse", "haven", "knitr", "gt", "ggplot2", "scales", "here"
-          ))
+          if (file.exists("renv.lock")) {
+            message("renv.lock found — restoring via renv")
+            install.packages("renv")
+            renv::restore()
+          } else {
+            message("No renv.lock — installing packages directly")
+            install.packages(c(
+              "tidyverse", "haven", "knitr", "gt", "ggplot2", "scales", "here"
+            ))
+          }
         shell: Rscript {0}
 
       # 6. Set up GitHub Pages
