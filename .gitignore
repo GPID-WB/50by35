@@ -76,3 +76,6 @@ data/processed/*
 # OS
 .DS_Store
 Thumbs.db
+
+/.quarto/
+**/*.quarto_ipynb
